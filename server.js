@@ -11,10 +11,6 @@ const loginLimiter = rateLimit({
   message: 'Too many login attempts from this IP, please try again after 15 minutes'
 });
 
-app.use('/api/login', loginLimiter);
-
-app.use(helmet());
-
 dotenv.config();
 
 const app = express();
@@ -23,6 +19,9 @@ app.use(express.json());
 // Define Routes
 app.use('/api/login', authRoutes);
 app.use('/api/contacts', contactRoutes);
+app.use('/api/login', loginLimiter);
+
+app.use(helmet());
 
 // Start the Server
 const PORT = process.env.PORT || 3000;
