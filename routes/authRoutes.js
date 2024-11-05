@@ -5,7 +5,7 @@ import { loginUser } from '../controllers/authController.js';
 const router = express.Router();
 
 // Login Route with Validation
-router.post('/login', [
+router.post('/', [
   body('username').isString().notEmpty().withMessage('Username is required'),
   body('password').isString().notEmpty().withMessage('Password is required'),
 ], (req, res, next) => {
