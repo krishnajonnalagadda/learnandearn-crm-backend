@@ -20,14 +20,31 @@ export const getContacts = (req, res) => {
   const limit = parseInt(req.query.limit) || 10;
   const offset = (page - 1) * limit;
 
+  // First query to get the paginated contacts
   db.query(
     'SELECT * FROM contacts_table WHERE assigned_user_id = ? LIMIT ? OFFSET ?',
     [userId, limit, offset],
-    (err, results) => {
+    (err, contacts) => {
       if (err) {
         return res.status(500).json({ message: 'Internal server error' });
       }
-      res.json(results);
+
+      // Second query to get the total count of contacts
+      db.query(
+        'SELECT COUNT(*) AS total FROM contacts_table WHERE assigned_user_id = ?',
+        [userId],
+        (countErr, countResults) => {
+          if (countErr) {
+            return res.status(500).json({ message: 'Internal server error' });
+          }
+
+          const totalContacts = countResults[0].total;
+          res.json({
+            contacts,
+            totalContacts,
+          });
+        }
+      );
     }
   );
 };
