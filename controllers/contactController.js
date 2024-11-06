@@ -35,15 +35,15 @@ export const getContacts = (req, res) => {
 // Update Contact
 export const updateContact = (req, res) => {
   const { id } = req.params;
-  const { status, remarks, follow_up_date } = req.body;
+  const { status, remarks, follow_up_date, last_activity, whatsapp_sent } = req.body;
 
   if (!status || !remarks || !follow_up_date) {
     return res.status(400).json({ message: 'All fields are required' });
   }
 
   db.query(
-    'UPDATE contacts_table SET status = ?, remarks = ?, follow_up_date = ? WHERE contact_id = ? AND assigned_user_id = ?',
-    [status, remarks, follow_up_date, id, req.user.user_id],
+    'UPDATE contacts_table SET status = ?, remarks = ?, follow_up_date = ?, last_activity = ?, whatsapp_sent = ? WHERE contact_id = ? AND assigned_user_id = ?',
+    [status, remarks, follow_up_date, last_activity, whatsapp_sent, id, req.user.user_id],
     (err, results) => {
       if (err) {
         return res.status(500).json({ message: 'Internal server error' });
@@ -74,8 +74,7 @@ export const uploadContactLog = (req, res) => {
 
   db.query(
     `UPDATE contacts_table SET ${column} = ? WHERE contact_id = ? AND assigned_user_id = ?`,
-    // [req.file.path, id, userId],
-    [`/uploads/${req.file.filename}`, id, userId], 
+    [`/uploads/${req.file.filename}`, id, userId],
     (err, results) => {
       if (err) {
         return res.status(500).json({ message: 'Internal server error' });
@@ -83,9 +82,7 @@ export const uploadContactLog = (req, res) => {
       if (results.affectedRows === 0) {
         return res.status(404).json({ message: 'Contact not found or not authorized' });
       }
-    //   res.json({ message: 'File uploaded successfully', filePath: req.file.path });
-        res.json({ message: 'File uploaded successfully', filePath: `/uploads/${req.file.filename}` });
-      
+      res.json({ message: 'File uploaded successfully', filePath: `/uploads/${req.file.filename}` });
     }
   );
 };
