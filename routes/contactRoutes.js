@@ -43,6 +43,6 @@ const router = express.Router();
 // Contacts Routes
 router.get('/', authenticateJWT, getContacts);
 router.put('/:id', authenticateJWT, updateContact);
-router.post('/:id/upload_log', authenticateJWT, upload.single('file'), uploadContactLog); // New route for file uploads
+router.post('/:id/upload_log', authenticateJWT, upload.single('file'), uploadContactLog);// New route for file uploads
 
 export default router;

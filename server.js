@@ -4,8 +4,13 @@ import contactRoutes from './routes/contactRoutes.js';
 import dotenv from 'dotenv';
 import helmet from 'helmet';
 import rateLimit from 'express-rate-limit';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(express.json());
@@ -24,6 +29,7 @@ app.use('/api/login', loginLimiter);
 // Define Routes
 app.use('/api/login', authRoutes);
 app.use('/api/contacts', contactRoutes);
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Start the Server
 const PORT = process.env.PORT || 3000;

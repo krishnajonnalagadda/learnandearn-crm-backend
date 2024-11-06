@@ -74,7 +74,8 @@ export const uploadContactLog = (req, res) => {
 
   db.query(
     `UPDATE contacts_table SET ${column} = ? WHERE contact_id = ? AND assigned_user_id = ?`,
-    [req.file.path, id, userId],
+    // [req.file.path, id, userId],
+    [`/uploads/${req.file.filename}`, id, userId], 
     (err, results) => {
       if (err) {
         return res.status(500).json({ message: 'Internal server error' });
@@ -82,7 +83,9 @@ export const uploadContactLog = (req, res) => {
       if (results.affectedRows === 0) {
         return res.status(404).json({ message: 'Contact not found or not authorized' });
       }
-      res.json({ message: 'File uploaded successfully', filePath: req.file.path });
+    //   res.json({ message: 'File uploaded successfully', filePath: req.file.path });
+        res.json({ message: 'File uploaded successfully', filePath: `/uploads/${req.file.filename}` });
+      
     }
   );
 };
